@@ -1,0 +1,503 @@
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+
+<!--<head>-->
+<!--  <title>Plant AI</title>-->
+<!--  <meta charset="UTF-8">-->
+<!--  <meta name="viewport" content="width=device-width, initial-scale=1">-->
+
+<!--  &lt;!&ndash; Bootstrap &ndash;&gt;-->
+<!--  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">-->
+
+<!--  &lt;!&ndash; Font Awesome &ndash;&gt;-->
+<!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">-->
+
+<!--  &lt;!&ndash; Custom Styles &ndash;&gt;-->
+<!--  <link href="../static/styles/style.css" rel='stylesheet' type='text/css'>-->
+<!--</head>-->
+
+<!--<body>-->
+<!--  <div class="header-outs inner_page-banner" id="home">-->
+<!--    <div class="headder-top">-->
+<!--      <nav>-->
+<!--        <div id="logo">-->
+<!--          <h1><a href="/">Agro-Help</a></h1>-->
+<!--        </div>-->
+<!--      </nav>-->
+<!--    </div>-->
+<!--  </div>-->
+
+<!--  <div class="using-border py-3">-->
+<!--    <div class="inner_breadcrumb ml-4">-->
+<!--      <ul class="short_ls">-->
+<!--        <li><a href="/">Home</a></li>-->
+<!--      </ul>-->
+<!--    </div>-->
+<!--  </div>-->
+
+<!--  <section class="about py-lg-4 py-md-3 py-sm-3 py-3" id="about">-->
+<!--    <div class="container py-lg-5 py-md-4 py-sm-4 py-3">-->
+<!--      <div class="row" style="justify-content: center;">-->
+<!--        <div class="col-md-10 about-two-grids">-->
+<!--          <h3 class="mb-md-4 mb-sm-3 mb-3 text-center">Result</h3>-->
+<!--          <div class="about-para-txt text-justify" id="result-text">-->
+<!--            {{ result }}-->
+<!--          </div>-->
+
+<!--          &lt;!&ndash; Language Selection &ndash;&gt;-->
+<!--          <div class="text-center mt-3">-->
+<!--            <label for="language-select"><b>Select Language:</b></label>-->
+<!--            <select id="language-select" class="form-control w-50 mx-auto">-->
+<!--              {% for lang_name, lang_code in languages.items() %}-->
+<!--              <option value="{{ lang_code }}">{{ lang_name }}</option>-->
+<!--              {% endfor %}-->
+<!--            </select>-->
+<!--          </div>-->
+
+<!--          &lt;!&ndash; Speak Button &ndash;&gt;-->
+<!--          <div class="text-center mt-3">-->
+<!--            <button class="btn btn-primary" onclick="speakText()">-->
+<!--              <i class="fa fa-volume-up"></i> Listen-->
+<!--            </button>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </section>-->
+
+<!--  <footer>-->
+<!--    <div class="container pt-5 pb-3">-->
+<!--      <div class="footer-w3layouts-head text-center">-->
+<!--        <h2><a href="/">Agro-Help</a></h2>-->
+<!--      </div>-->
+<!--      <div class="text-center">-->
+<!--        <a href="#home" class="move-top text-center mt-3"><i class="fa fa-arrow-up" aria-hidden="true"></i></a>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </footer>-->
+
+<!--  &lt;!&ndash; Scripts &ndash;&gt;-->
+<!--  <script>-->
+<!--    function speakText() {-->
+<!--        let text = document.getElementById("result-text").innerText;-->
+<!--        let language = document.getElementById("language-select").value;-->
+
+<!--        fetch("/generate-audio", {-->
+<!--            method: "POST",-->
+<!--            headers: {-->
+<!--                "Content-Type": "application/x-www-form-urlencoded",-->
+<!--            },-->
+<!--            body: new URLSearchParams({-->
+<!--                text: text,-->
+<!--                language: language,-->
+<!--            }),-->
+<!--        })-->
+<!--        .then(response => response.blob())-->
+<!--        .then(blob => {-->
+<!--            let url = URL.createObjectURL(blob);-->
+<!--            let audio = new Audio(url);-->
+<!--            audio.play();-->
+<!--        })-->
+<!--        .catch(error => console.error("Error generating speech:", error));-->
+<!--    }-->
+<!--  </script>-->
+
+<!--</body>-->
+<!--</html>-->
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+
+<!--<head>-->
+<!--  <title>Agro-Help - Disease Detection</title>-->
+<!--  <meta charset="UTF-8">-->
+<!--  <meta name="viewport" content="width=device-width, initial-scale=1">-->
+
+<!--  &lt;!&ndash; Bootstrap &ndash;&gt;-->
+<!--  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">-->
+
+<!--  &lt;!&ndash; Font Awesome &ndash;&gt;-->
+<!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">-->
+
+<!--  &lt;!&ndash; Custom Styles &ndash;&gt;-->
+<!--  <link href="../static/styles/style.css" rel='stylesheet' type='text/css'>-->
+
+<!--  <style>-->
+<!--    /* Background & Main Styling */-->
+<!--    body {-->
+<!--      background: #f4f4f4;-->
+<!--      font-family: Arial, sans-serif;-->
+<!--    }-->
+
+<!--    .container {-->
+<!--      background: #fff;-->
+<!--      border-radius: 12px;-->
+<!--      padding: 30px;-->
+<!--      box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);-->
+<!--      margin-top: 30px;-->
+<!--    }-->
+
+<!--    /* Custom Layout for Result & Pesticide Image */-->
+<!--    .result-container {-->
+<!--      display: flex;-->
+<!--      align-items: center;-->
+<!--      justify-content: space-between;-->
+<!--      flex-wrap: wrap;-->
+<!--      margin-top: 20px;-->
+<!--    }-->
+
+<!--    .result-text {-->
+<!--      flex: 1;-->
+<!--      padding: 20px;-->
+<!--      font-size: 18px;-->
+<!--      line-height: 1.6;-->
+<!--    }-->
+
+<!--    /* Pesticide Section */-->
+<!--    .pesticide-section {-->
+<!--      width: 350px;-->
+<!--      height: 400px;-->
+<!--      display: flex;-->
+<!--      flex-direction: column;-->
+<!--      justify-content: center;-->
+<!--      align-items: center;-->
+<!--      text-align: center;-->
+<!--      background: #fff;-->
+<!--      padding: 25px;-->
+<!--      margin-left: 60px;-->
+<!--      border-radius: 12px;-->
+<!--      box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.25);-->
+<!--      transition: transform 0.2s, box-shadow 0.3s;-->
+<!--    }-->
+
+<!--    .pesticide-section:hover {-->
+<!--      transform: scale(1.05);-->
+<!--      box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3);-->
+<!--    }-->
+
+<!--    .pesticide-image {-->
+<!--      width: 100%;-->
+<!--      max-width: 320px;-->
+<!--      border-radius: 10px;-->
+<!--      cursor: pointer;-->
+<!--      transition: transform 0.2s;-->
+<!--    }-->
+
+<!--    .pesticide-image:hover {-->
+<!--      transform: scale(1.1);-->
+<!--    }-->
+
+<!--    /* Responsive Adjustments */-->
+<!--    @media (max-width: 768px) {-->
+<!--      .result-container {-->
+<!--        flex-direction: column;-->
+<!--        align-items: center;-->
+<!--      }-->
+<!--      .pesticide-section {-->
+<!--        margin-left: 0;-->
+<!--        margin-top: 20px;-->
+<!--        width: 100%;-->
+<!--      }-->
+<!--    }-->
+<!--  </style>-->
+<!--</head>-->
+
+<!--<body>-->
+<!--  <div class="header-outs inner_page-banner" id="home">-->
+<!--    <div class="headder-top">-->
+<!--      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">-->
+<!--        <div class="container text-center">-->
+<!--          <a class="navbar-brand mx-auto" href="/" style="color: black !important; font-weight: bold; font-size: 2rem;">🌿 Agro-Help</a>-->
+<!--        </div>-->
+<!--      </nav>-->
+<!--    </div>-->
+<!--  </div>-->
+
+
+
+<!--  <div class="container">-->
+<!--    <h2 class="text-center mb-4" style="color: #333;">🌱 Agro-Help Disease Detection 🌱</h2>-->
+
+<!--    <div class="result-container">-->
+<!--      &lt;!&ndash; Disease Detection Result &ndash;&gt;-->
+<!--      <div class="result-text">-->
+<!--        <h4 style="color: #007bff;">Detected Disease:</h4>-->
+<!--        <p id="result-text">{{ result }}</p>-->
+
+<!--        &lt;!&ndash; Language Selection &ndash;&gt;-->
+<!--        <div class="text-center mt-3">-->
+<!--          <label for="language-select"><b>Select Language:</b></label>-->
+<!--          <select id="language-select" class="form-control w-50 mx-auto">-->
+<!--            {% for lang_name, lang_code in languages.items() %}-->
+<!--            <option value="{{ lang_code }}">{{ lang_name }}</option>-->
+<!--            {% endfor %}-->
+<!--          </select>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Speak Button &ndash;&gt;-->
+<!--        <div class="text-center mt-3">-->
+<!--          <button class="btn btn-success btn-lg" onclick="speakText()">-->
+<!--            <i class="fa fa-volume-up"></i> Listen-->
+<!--          </button>-->
+<!--        </div>-->
+<!--      </div>-->
+
+<!--      &lt;!&ndash; Pesticide Section (Bigger Image, Centered) &ndash;&gt;-->
+<!--      <div class="pesticide-section">-->
+<!--        <h5 style="color: #d9534f;">🛡️ Recommended Pesticide</h5>-->
+<!--        <a href="https://agriplexindia.com/blogs/featured/late-blight-in-potato" target="_blank">-->
+<!--          <img src="https://th.bing.com/th/id/OIP.BQGVToK181yPyqCrW-GWNwAAAA?w=370&h=371&rs=1&pid=ImgDetMain"-->
+<!--               alt="Pesticide Image" class="pesticide-image">-->
+<!--        </a>-->
+<!--        <p><small>🔗 Click on the image to buy or learn more</small></p>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+
+<!--  <footer class="text-center mt-5 py-4" style="background: #222; color: #fff;">-->
+<!--    <p>🌿 <b>Agro-Help</b> | Helping Farmers with Smart Solutions</p>-->
+<!--  </footer>-->
+
+<!--  &lt;!&ndash; Scripts &ndash;&gt;-->
+<!--  <script>-->
+<!--    function speakText() {-->
+<!--        let text = document.getElementById("result-text").innerText;-->
+<!--        let language = document.getElementById("language-select").value;-->
+
+<!--        fetch("/generate-audio", {-->
+<!--            method: "POST",-->
+<!--            headers: {-->
+<!--                "Content-Type": "application/x-www-form-urlencoded",-->
+<!--            },-->
+<!--            body: new URLSearchParams({-->
+<!--                text: text,-->
+<!--                language: language,-->
+<!--            }),-->
+<!--        })-->
+<!--        .then(response => response.blob())-->
+<!--        .then(blob => {-->
+<!--            let url = URL.createObjectURL(blob);-->
+<!--            let audio = new Audio(url);-->
+<!--            audio.play();-->
+<!--        })-->
+<!--        .catch(error => console.error("Error generating speech:", error));-->
+<!--    }-->
+<!--  </script>-->
+
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Agro-Help - Disease Detection</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <!-- Custom Styles -->
+  <link href="../static/styles/style.css" rel='stylesheet' type='text/css'>
+
+  <style>
+    /* Background & Main Styling */
+    body {
+      background: #f4f4f4;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      background: #fff;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+      margin-top: 30px;
+    }
+
+    /* Custom Layout for Result & Pesticide Image */
+    .result-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .result-text {
+      flex: 1;
+      padding: 20px;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    /* Pesticide Section */
+    .pesticide-section {
+      width: 350px;
+      height: 450px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background: #fff;
+      padding: 25px;
+      margin-left: 60px;
+      border-radius: 12px;
+      box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.25);
+      transition: transform 0.2s, box-shadow 0.3s;
+    }
+
+    .pesticide-section:hover {
+      transform: scale(1.05);
+      box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .pesticide-image {
+      width: 100%;
+      max-width: 320px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .pesticide-image:hover {
+      transform: scale(1.1);
+    }
+
+    .purchase-btn {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .purchase-btn:hover {
+      background-color: #218838;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .result-container {
+        flex-direction: column;
+        align-items: center;
+      }
+      .pesticide-section {
+        margin-left: 0;
+        margin-top: 20px;
+        width: 100%;
+      }
+    }
+
+    /* Language Selection & Read Aloud */
+    .language-select {
+      margin-top: 15px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .read-aloud-btn {
+      padding: 10px 15px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .read-aloud-btn:hover {
+      background-color: #0056b3;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="header-outs inner_page-banner" id="home">
+    <div class="headder-top">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container text-center">
+          <a class="navbar-brand mx-auto" href="/" style="color: black !important; font-weight: bold; font-size: 2rem;">🌿 Agro-Help</a>
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2 class="text-center mb-4" style="color: #333;">🌱 Agro-Help Disease Detection 🌱</h2>
+
+    <div class="result-container">
+      <!-- Disease Detection Result -->
+      <div class="result-text">
+        <h4 style="color: #007bff;">Detected Disease:</h4>
+        <p id="result-text">{{ result }}</p>
+
+        <!-- Language Selection -->
+        <div class="language-select">
+          <label for="language">Select Language:</label>
+          <select id="language">
+            <option value="en-US">English</option>
+            <option value="hi-IN">Hindi</option>
+            <option value="mr-IN">Marathi</option>
+            <option value="bn-IN">Bengali</option>
+            <option value="ta-IN">Tamil</option>
+            <option value="te-IN">Telugu</option>
+            <option value="kn-IN">Kannada</option>
+            <option value="gu-IN">Gujarati</option>
+            <option value="pa-IN">Punjabi</option>
+          </select>
+          <button class="read-aloud-btn" onclick="speakText()">🔊 Predict</button>
+        </div>
+      </div>
+
+      <!-- Pesticide Section (Bigger Image, Centered) -->
+      <div class="pesticide-section">
+        <h5 style="color: #d9534f;">🛡️ Recommended Pesticide</h5>
+        <a href="https://agriplexindia.com/blogs/featured/late-blight-in-potato" target="_blank">
+          <img src="https://th.bing.com/th/id/OIP.BQGVToK181yPyqCrW-GWNwAAAA?w=370&h=371&rs=1&pid=ImgDetMain"
+               alt="Pesticide Image" class="pesticide-image">
+        </a>
+        <p><small>🔗 Click on the image to buy or learn more</small></p>
+        <a href="https://www.bighaat.com/" target="_blank">
+          <button class="purchase-btn">🛒 Visit our website to purchase pesticides</button>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="text-center mt-5 py-4" style="background: #222; color: #fff;">
+    <p>🌿 <b>Agro-Help</b> | Helping Farmers with Smart Solutions</p>
+  </footer>
+
+  <script>
+    function speakText() {
+      let text = document.getElementById("result-text").innerText;
+      let language = document.getElementById("language").value;
+
+      let speech = new SpeechSynthesisUtterance();
+      speech.text = text;
+      speech.lang = language;
+      speech.rate = 1;
+      speech.pitch = 1;
+
+      window.speechSynthesis.speak(speech);
+    }
+  </script>
+
+</body>
+</html>
+
